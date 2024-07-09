@@ -7,23 +7,41 @@ import MyNetworkPage from './pages/MyNetworkPage';
 import MessagingPage from './pages/MessagingPage';
 import ProfilePage from './pages/ProfilePage';
 import SkillsPage from './pages/SkillsPage';
+import Layout from './components/Layout';
+
+// Fake user database
+const fakeUsers = [
+  { email: 'user1@example.com', password: 'password1', firstName: 'John', lastName: 'Doe', phone: '123-456-7890' },
+  { email: 'user2@example.com', password: 'password2', firstName: 'Jane', lastName: 'Smith', phone: '234-567-8901' },
+];
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const login = (email, password) => {
-    if (email === 'user@example.com' && password === 'password') {
+    const user = fakeUsers.find(u => u.email === email && u.password === password);
+    if (user) {
       setIsLoggedIn(true);
+      setCurrentUser(user);
+    } else {
+      alert('Invalid email or password');
     }
   };
 
   const register = (user) => {
-    console.log('Registered user:', user);
+    fakeUsers.push(user);
     setIsLoggedIn(true);
+    setCurrentUser(user);
   };
 
   const saveSkills = (skills) => {
     console.log('Saved skills:', skills);
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setCurrentUser(null);
   };
 
   return (
@@ -31,11 +49,12 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={login} />} />
         <Route path="/register" element={<RegisterPage onRegister={register} />} />
-        <Route path="/skills" element={isLoggedIn ? <SkillsPage onSaveSkills={saveSkills} /> : <Navigate to="/login" />} />
-        <Route path="/home" element={isLoggedIn ? <HomePage /> : <Navigate to="/login" />} />
-        <Route path="/network" element={isLoggedIn ? <MyNetworkPage /> : <Navigate to="/login" />} />
-        <Route path="/messaging" element={isLoggedIn ? <MessagingPage /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="/" element={isLoggedIn ? <Layout><HomePage /></Layout> : <Navigate to="/login" />} />
+        <Route path="/skills" element={isLoggedIn ? <Layout><SkillsPage onSaveSkills={saveSkills} /></Layout> : <Navigate to="/login" />} />
+        <Route path="/home" element={isLoggedIn ? <Layout><HomePage /></Layout> : <Navigate to="/login" />} />
+        <Route path="/network" element={isLoggedIn ? <Layout><MyNetworkPage /></Layout> : <Navigate to="/login" />} />
+        <Route path="/messaging" element={isLoggedIn ? <Layout><MessagingPage /></Layout> : <Navigate to="/login" />} />
+        <Route path="/profile" element={isLoggedIn ? <Layout><ProfilePage onLogout={logout} /></Layout> : <Navigate to="/login" />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

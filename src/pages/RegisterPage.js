@@ -11,7 +11,8 @@ function RegisterPage({ onRegister }) {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    onRegister({ firstName, lastName, email, password, phone });
+    const newUser = { email, password, firstName, lastName, phone };
+    onRegister(newUser);
     navigate('/skills');
   };
 

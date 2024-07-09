@@ -14,14 +14,8 @@ const messagesData = [
 
 function MessagingPage() {
   return (
-    <div className="flex min-h-screen">
-      <div className="bg-gray-800 text-white w-64 p-6 flex flex-col">
-        <nav className="flex-grow">
-          <a href="/home" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Home</a>
-          <a href="/network" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">My Network</a>
-          <a href="/messaging" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Messaging</a>
-          <a href="/profile" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Profile</a>
-        </nav>
+    <div className="flex">
+      <div className="w-1/4 bg-gray-200 p-6">
         <h2 className="text-xl font-semibold mb-4">Friends</h2>
         <ul>
           {friendsData.map((friend, index) => (
