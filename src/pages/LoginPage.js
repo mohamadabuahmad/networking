@@ -40,6 +40,9 @@ function LoginPage({ onLogin }) {
         <p className="mt-4">
           Don't have an account? <a href="/register" className="text-blue-600">Register</a>
         </p>
+        <p className="mt-4">
+          Forgot your password? <a href="/forgot-password" className="text-blue-600">Click here</a>
+        </p>
       </form>
     </div>
   );

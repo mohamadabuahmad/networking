@@ -7,6 +7,7 @@ import MyNetworkPage from './pages/MyNetworkPage';
 import MessagingPage from './pages/MessagingPage';
 import ProfilePage from './pages/ProfilePage';
 import SkillsPage from './pages/SkillsPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import Layout from './components/Layout';
 
 // Fake user database
@@ -49,6 +50,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={login} />} />
         <Route path="/register" element={<RegisterPage onRegister={register} />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/" element={isLoggedIn ? <Layout><HomePage /></Layout> : <Navigate to="/login" />} />
         <Route path="/skills" element={isLoggedIn ? <Layout><SkillsPage onSaveSkills={saveSkills} /></Layout> : <Navigate to="/login" />} />
         <Route path="/home" element={isLoggedIn ? <Layout><HomePage /></Layout> : <Navigate to="/login" />} />
