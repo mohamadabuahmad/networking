@@ -61,7 +61,7 @@ const MessagingPage = () => {
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
   const localStreamRef = useRef(null);
-
+  const messageInputRef = useRef(null);
   // Fetch friends list on component mount
   useEffect(() => {
     if (currentUser) {
