@@ -1,24 +1,20 @@
 const http = require('http');
 const WebSocket = require('ws');
 
-// Create an HTTP server and integrate with WebSocket server
-const server = http.createServer();
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end('Server is running');
+});
+
 const wss = new WebSocket.Server({ noServer: true });
 
-// Handle WebSocket connections
 wss.on('connection', (ws) => {
   console.log('New WebSocket client connected');
 
   ws.on('message', (message) => {
     console.log(`Received message => ${message}`);
-
-    // Broadcast the message to all clients except the sender
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-        console.log(`Sent message to client: ${client._socket.remoteAddress}`);
-      }
-    });
+    // Handle message quickly and asynchronously
+    processMessage(message, ws);
   });
 
   ws.on('close', () => {
@@ -26,15 +22,21 @@ wss.on('connection', (ws) => {
   });
 });
 
-// Handle HTTP upgrade requests and upgrade to WebSocket
 server.on('upgrade', (request, socket, head) => {
-  // No token verification; directly handle WebSocket upgrade
   wss.handleUpgrade(request, socket, head, (ws) => {
     wss.emit('connection', ws, request);
   });
 });
 
-// Start the server on the assigned port by Vercel
+// Ensure server starts listening as soon as possible
 server.listen(process.env.PORT || 3000, () => {
-  console.log('HTTP server and WebSocket server running');
+  console.log('Server is listening...');
 });
+
+// Example function for processing messages asynchronously
+function processMessage(message, ws) {
+  // Asynchronous operation to avoid blocking
+  setImmediate(() => {
+    ws.send(`Echo: ${message}`);
+  });
+}
