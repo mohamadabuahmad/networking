@@ -6,7 +6,7 @@ const websocketUrl = `http://networking-1etg.vercel.app`; // Your deployed WebSo
 
 const wss = new WebSocket.Server({ port });
 
-wss.on('connection', (http, req) => {
+wss.on('connection', (ws, req) => {
   console.log('New WebSocket client connected to', websocketUrl);
 
   ws.on('message', (message) => {
