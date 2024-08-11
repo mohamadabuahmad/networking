@@ -1,6 +1,9 @@
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 });
+// Explicitly define the port you want to use
+const port = 8080; // Change this to the desired port number if needed
+
+const wss = new WebSocket.Server({ port });
 
 wss.on('connection', (ws) => {
   console.log('New WebSocket client connected');
@@ -22,5 +25,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-
-console.log('WebSocket server running on ws://localhost:8080');
+// Log the WebSocket server's running status
+console.log(`WebSocket server running at ws://localhost:${port}`); // For local development
+// Or, if you're referencing your deployed URL:
+console.log('WebSocket server is deployed at wss://networking-1etg.vercel.app');

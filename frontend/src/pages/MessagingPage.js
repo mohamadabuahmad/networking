@@ -14,7 +14,7 @@ const MessagingPage = () => {
 
   // WebSocket setup for messaging and signaling
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    selectedUser ? `ws://localhost:8080` : null,
+    selectedUser ? `https://networking-1etg.vercel.app` : null,
     {
       onOpen: () => {
         console.log('WebSocket connection opened');
