@@ -16,7 +16,23 @@ function HomePage() {
   const [sidebarContent, setSidebarContent] = useState([]);
   const [sidebarTitle, setSidebarTitle] = useState('');
   const [message, setMessage] = useState('');
+  const [darkMode, setDarkMode] = useState(false); // State for dark mode
 
+  useEffect(() => {
+    // Check for saved theme in localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setDarkMode(savedTheme === 'dark');
+      document.documentElement.classList.add(savedTheme);
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    const newTheme = darkMode ? 'light' : 'dark';
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', newTheme);
+  };
   const fetchUsername = async (userId) => {
     try {
       const response = await axios.get(`/user/${userId}`);
@@ -340,8 +356,14 @@ function HomePage() {
   };
 
   return (
-    <div className="flex-grow p-6">
+    <div className={`bg-white text-black dark:bg-gray-800 dark:text-white min-h-screen p-6 ${darkMode ? 'dark' : ''}`}>
       <h1 className="text-3xl mb-6">Welcome to the Home Page</h1>
+      <button
+        onClick={toggleDarkMode}
+        className="bg-gray-800 text-white px-4 py-2 rounded dark:bg-gray-200 dark:text-black"
+      >
+        {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+      </button>
 
       <div className="mb-6">
         {message && <p className="text-red-500">{message}</p>}
@@ -356,8 +378,8 @@ function HomePage() {
 
       <div className="space-y-4">
         {posts.map(post => (
-          <div key={post.post_id} className="bg-white p-6 rounded-lg shadow-md relative">
-            <span className="absolute top-2 right-2 text-gray-600 text-sm">{post.post_date}</span>
+          <div key={post.post_id} className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md relative">
+            <span className="absolute top-2 right-2 text-gray-600 dark:text-gray-300 text-sm">{post.post_date}</span>
             <h2 className="font-semibold mb-2">{post.username}</h2>
             <p>{post.post_content}</p>
             <div className="mt-4">
