@@ -1,6 +1,6 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
-const { connectToDb, getDb } = require('./database');
+const { connectToDb, getDb } = require('../database');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
