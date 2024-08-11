@@ -1,30 +1,18 @@
-const express = require('express');
-const http = require('http');
 const WebSocket = require('ws');
 
-const app = express();
-
-// Define routes for your HTTP server
-app.get('/', (req, res) => {
-  res.send('Hello from the HTTP server!');
-});
-
-// Create an HTTP server
-const server = http.createServer(app);
-
-// Create a WebSocket server that shares the same HTTP server
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ port: 8080 });
 
 wss.on('connection', (ws) => {
   console.log('New WebSocket client connected');
 
   ws.on('message', (message) => {
     console.log(`Received message => ${message}`);
-    
+
     // Broadcast the message to all clients except the sender
     wss.clients.forEach((client) => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(message);
+        console.log(`Sent message to client: ${client._socket.remoteAddress}`);
       }
     });
   });
@@ -34,8 +22,5 @@ wss.on('connection', (ws) => {
   });
 });
 
-// Start the server
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+
+console.log('WebSocket server running on ws://localhost:8080');
