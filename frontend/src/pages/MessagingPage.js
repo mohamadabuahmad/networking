@@ -14,7 +14,7 @@ const MessagingPage = () => {
 
   // Updated WebSocket URL for deployment
   const websocketUrl = process.env.NODE_ENV === 'production'
-    ? 'wss://your-deployed-websocket-server.com'  // Use your actual deployed WebSocket server URL here
+    ? 'wss://networking-1etg.vercel.app/'  // Use your actual deployed WebSocket server URL here
     : 'ws://localhost:8080';
 
   // WebSocket setup for messaging and signaling

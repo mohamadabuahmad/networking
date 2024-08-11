@@ -1,11 +1,13 @@
 const WebSocket = require('ws');
 
-// Use an environment variable for the port or default to 8080
+// Define the port and WebSocket server URL
 const port = process.env.PORT || 8080;
+const websocketUrl = `wss://networking-1etg.vercel.app`; // Your deployed WebSocket server URL
+
 const wss = new WebSocket.Server({ port });
 
 wss.on('connection', (ws, req) => {
-  console.log('New WebSocket client connected');
+  console.log('New WebSocket client connected to', websocketUrl);
 
   ws.on('message', (message) => {
     console.log(`Received message => ${message}`);
@@ -24,4 +26,4 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-console.log(`WebSocket server running on port ${port}`);
+console.log(`WebSocket server running on ${websocketUrl} and port ${port}`);
