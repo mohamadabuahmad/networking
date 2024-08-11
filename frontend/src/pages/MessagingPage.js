@@ -12,54 +12,56 @@ const MessagingPage = () => {
   const [chatHistories, setChatHistories] = useState({});
   const [isVideoCallActive, setIsVideoCallActive] = useState(false);
 
+  // Updated WebSocket URL for deployment
+  const websocketUrl = process.env.NODE_ENV === 'production'
+    ? 'wss://your-deployed-websocket-server.com'  // Use your actual deployed WebSocket server URL here
+    : 'ws://localhost:8080';
+
   // WebSocket setup for messaging and signaling
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    selectedUser ? `wss://networking-1etg.vercel.app` : null,
+    selectedUser ? websocketUrl : null,
     {
       onOpen: () => {
         console.log('WebSocket connection opened');
         fetchChatHistory(selectedUser._id);
       },
       onClose: () => console.log('WebSocket connection closed'),
-  onMessage: (message) => {
-  console.log('Received message:', message);
-  
-  if (message.data instanceof Blob) {
-    // If the data is a Blob, convert it to text
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text = reader.result;
-      try {
-        const messageData = JSON.parse(text);
-        console.log('Parsed message data from Blob:', messageData);
-        if (messageData.sender_id === selectedUser._id) {
-          appendMessageToHistory(messageData.sender_id, messageData);
-          console.log('Message appended to history:', messageData);
-        } else {
-          console.warn('Received message from a different user:', messageData.sender_id);
+      onMessage: (message) => {
+        console.log('Received message:', message);
+        
+        if (message.data instanceof Blob) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const text = reader.result;
+            try {
+              const messageData = JSON.parse(text);
+              console.log('Parsed message data from Blob:', messageData);
+              if (messageData.sender_id === selectedUser._id) {
+                appendMessageToHistory(messageData.sender_id, messageData);
+                console.log('Message appended to history:', messageData);
+              } else {
+                console.warn('Received message from a different user:', messageData.sender_id);
+              }
+            } catch (error) {
+              console.error('Error parsing message from Blob:', error);
+            }
+          };
+          reader.readAsText(message.data);
+        } else if (typeof message.data === 'string') {
+          try {
+            const messageData = JSON.parse(message.data);
+            console.log('Parsed message data:', messageData);
+            if (messageData.sender_id === selectedUser._id) {
+              appendMessageToHistory(messageData.sender_id, messageData);
+              console.log('Message appended to history:', messageData);
+            } else {
+              console.warn('Received message from a different user:', messageData.sender_id);
+            }
+          } catch (error) {
+            console.error('Error parsing message:', error);
+          }
         }
-      } catch (error) {
-        console.error('Error parsing message from Blob:', error);
-      }
-    };
-    reader.readAsText(message.data);
-  } else if (typeof message.data === 'string') {
-    try {
-      const messageData = JSON.parse(message.data);
-      console.log('Parsed message data:', messageData);
-      if (messageData.sender_id === selectedUser._id) {
-        appendMessageToHistory(messageData.sender_id, messageData);
-        console.log('Message appended to history:', messageData);
-      } else {
-        console.warn('Received message from a different user:', messageData.sender_id);
-      }
-    } catch (error) {
-      console.error('Error parsing message:', error);
-    }
-  }
-},
-
-
+      },
     }
   );
 
@@ -326,13 +328,12 @@ const MessagingPage = () => {
             <div className="border p-4 h-full">
               {/* Chat content */}
               <div>
-  {(chatHistories[selectedUser._id] || []).map((msg, index) => (
-    <p key={`${msg.sender_id}-${index}`}>
-      {msg.sender_id === currentUser.user_id ? 'You' : selectedUser.user_name}: {msg.message}
-    </p>
-  ))}
-</div>
-
+                {(chatHistories[selectedUser._id] || []).map((msg, index) => (
+                  <p key={`${msg.sender_id}-${index}`}>
+                    {msg.sender_id === currentUser.user_id ? 'You' : selectedUser.user_name}: {msg.message}
+                  </p>
+                ))}
+              </div>
 
               <input type="text" id="messageInput" placeholder="Type your message" className="p-2 border rounded w-full mb-2" />
               <button onClick={handleSendMessage} className="bg-blue-500 text-white px-3 py-1 rounded">Send</button>
