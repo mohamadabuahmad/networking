@@ -26,34 +26,11 @@ const MessagingPage = () => {
         }
       },
       onClose: () => console.log('WebSocket connection closed'),
-      onMessage: (message) => {
-        console.log('Received message:', message);
-
-        if (message.data instanceof Blob) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const text = reader.result;
-            try {
-              const messageData = JSON.parse(text);
-              if (messageData.sender_id === selectedUser?._id) {
-                appendMessageToHistory(messageData.sender_id, messageData);
-              }
-            } catch (error) {
-              console.error('Error parsing message from Blob:', error);
-            }
-          };
-          reader.readAsText(message.data);
-        } else if (typeof message.data === 'string') {
-          try {
-            const messageData = JSON.parse(message.data);
-            if (messageData.sender_id === selectedUser?._id) {
-              appendMessageToHistory(messageData.sender_id, messageData);
-            }
-          } catch (error) {
-            console.error('Error parsing message:', error);
-          }
-        }
+      onError: (event) => {
+        console.error('WebSocket error:', event);
       },
+      onMessage: (message) => handleWebSocketMessage(message),
+      shouldReconnect: (closeEvent) => true, // Auto-reconnect on disconnect
     }
   );
 
@@ -146,9 +123,13 @@ const MessagingPage = () => {
     };
 
     peerConnection.onnegotiationneeded = async () => {
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-      sendMessage(JSON.stringify({ offer: peerConnection.localDescription }));
+      try {
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        sendMessage(JSON.stringify({ offer: peerConnection.localDescription }));
+      } catch (error) {
+        console.error('Error during negotiation:', error);
+      }
     };
   };
 
@@ -171,6 +152,36 @@ const MessagingPage = () => {
   const handleCandidate = async (candidate) => {
     const peerConnection = peerConnectionRef.current;
     await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+  };
+
+  // Handle incoming WebSocket messages
+  const handleWebSocketMessage = (message) => {
+    console.log('Received message:', message);
+
+    if (message.data instanceof Blob) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        try {
+          const messageData = JSON.parse(text);
+          if (messageData.sender_id === selectedUser?._id) {
+            appendMessageToHistory(messageData.sender_id, messageData);
+          }
+        } catch (error) {
+          console.error('Error parsing message from Blob:', error);
+        }
+      };
+      reader.readAsText(message.data);
+    } else if (typeof message.data === 'string') {
+      try {
+        const messageData = JSON.parse(message.data);
+        if (messageData.sender_id === selectedUser?._id) {
+          appendMessageToHistory(messageData.sender_id, messageData);
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    }
   };
 
   // Fetch chat history with a specific user
@@ -321,7 +332,7 @@ const MessagingPage = () => {
                 ))}
               </div>
 
-              <input type="text" id="messageInput" placeholder="Type your message" className="p-2 border rounded w-full mb-2" />
+              <input ref={messageInputRef} type="text" id="messageInput" placeholder="Type your message" className="p-2 border rounded w-full mb-2" />
               <button onClick={handleSendMessage} className="bg-blue-500 text-white px-3 py-1 rounded">Send</button>
             </div>
             {isVideoCallActive && (

@@ -1,9 +1,11 @@
+const http = require('http');
 const WebSocket = require('ws');
 
-// Assuming this WebSocket server is deployed, Vercel will automatically assign a port.
-// Therefore, we don't need to specify a port here.
+// Create an HTTP server and integrate with WebSocket server
+const server = http.createServer();
 const wss = new WebSocket.Server({ noServer: true });
 
+// Handle WebSocket connections
 wss.on('connection', (ws) => {
   console.log('New WebSocket client connected');
 
@@ -24,4 +26,15 @@ wss.on('connection', (ws) => {
   });
 });
 
-console.log('WebSocket server running on wss://networking-znhw.vercel.app/');
+// Handle HTTP upgrade requests and upgrade to WebSocket
+server.on('upgrade', (request, socket, head) => {
+  // No token verification; directly handle WebSocket upgrade
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});
+
+// Start the server on the assigned port by Vercel
+server.listen(process.env.PORT || 3000, () => {
+  console.log('HTTP server and WebSocket server running');
+});
