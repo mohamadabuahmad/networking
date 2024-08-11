@@ -1,11 +1,14 @@
 const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
 const { ObjectId } = require('mongodb');
 const { connectToDb, getDb } = require('./database');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// Initialize Express app
 const app = express();
-const port = 3005; // Define the port here
+const port = process.env.PORT || 3005;
 
 // Middleware
 app.use(bodyParser.json());
@@ -16,6 +19,30 @@ app.use(cors({
   credentials: true // Allow cookies and other credentials
 }));
 
+// HTTP Server creation
+const server = http.createServer(app);
+
+// WebSocket Server creation
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  console.log('New WebSocket client connected');
+
+  ws.on('message', (message) => {
+    console.log(`Received message => ${message}`);
+
+    // Broadcast the message to all clients except the sender
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  ws.on('close', () => {
+    console.log('WebSocket client disconnected');
+  });
+});
 // Database connection
 let db;
 connectToDb((err) => {
