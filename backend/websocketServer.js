@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 
 // Define the port and WebSocket server URL
 const port = process.env.PORT || 8080;
-const websocketUrl = `wss://networking-1etg.vercel.app`; // Your deployed WebSocket server URL
+const websocketUrl = `http://networking-1etg.vercel.app`; // Your deployed WebSocket server URL
 
 const wss = new WebSocket.Server({ port });
 
