@@ -34,7 +34,6 @@ const SettingsPage = () => {
 
   const handleEditClick = (field) => {
     if (editingField === field) {
-      // Save changes
       const updateData = async () => {
         try {
           const response = await axios.post('/update-user', { user_id: currentUser.user_id, field, value: userData[field] });
@@ -87,73 +86,70 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white dark:bg-gray-800 text-black dark:text-white">
       <h1 className="text-3xl mb-6">Settings</h1>
       
-      {/* Section 1: User Data */}
       <div className="mb-6">
         <h2 className="text-2xl mb-4">User Data</h2>
-        <table className="min-w-full bg-white">
+        <table className="min-w-full bg-white dark:bg-gray-700 text-black dark:text-white">
           <thead>
             <tr>
-              <th className="py-2 px-4 border-b">Field</th>
-              <th className="py-2 px-4 border-b">Value</th>
-              <th className="py-2 px-4 border-b">Action</th>
-              <th className="py-2 px-4 border-b"></th>
+              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Field</th>
+              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Value</th>
+              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Action</th>
+              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600"></th>
             </tr>
           </thead>
           <tbody>
-          {Object.entries(userData).map(([field, value]) => (
-    field !== '_id' && (
-        <tr key={field}>
-            <td className="py-2 px-4 border-b">{field}</td>
-            <td className="py-2 px-4 border-b">
-                {editingField === field ? (
-                    <input
+            {Object.entries(userData).map(([field, value]) => (
+              field !== '_id' && (
+                <tr key={field}>
+                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">{field}</td>
+                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
+                    {editingField === field ? (
+                      <input
                         type="text"
                         value={value}
                         onChange={(e) => handleInputChange(e, field)}
-                        className="w-full p-2 border border-gray-300 rounded mt-1"
-                    />
-                ) : (
-                    renderFieldValue(value)
-                )}
-            </td>
-            <td className="py-2 px-4 border-b">
-                <button
-                    onClick={() => handleEditClick(field)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded"
-                >
-                    {editingField === field ? 'Done' : 'Edit'}
-                </button>
-            </td>
-            <td className="py-2 px-4 border-b"></td>
-        </tr>
-    )
-))}
-
+                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded mt-1 bg-white dark:bg-gray-700 text-black dark:text-white"
+                      />
+                    ) : (
+                      renderFieldValue(value)
+                    )}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
+                    <button
+                      onClick={() => handleEditClick(field)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded dark:bg-blue-700"
+                    >
+                      {editingField === field ? 'Done' : 'Edit'}
+                    </button>
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600"></td>
+                </tr>
+              )
+            ))}
           </tbody>
         </table>
       </div>
 
-      {/* Section 2: Skills */}
       <div>
         <h2 className="text-2xl mb-4">Skills</h2>
-        <table className="min-w-full bg-white">
+        <table className="min-w-full bg-white dark:bg-gray-700 text-black dark:text-white">
           <thead>
             <tr>
-              <th className="py-2 px-4 border-b">Skill</th>
-              <th className="py-2 px-4 border-b">Action</th>
+              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Skill</th>
+              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Action</th>
             </tr>
           </thead>
           <tbody>
             {skills.map((skill, index) => (
               <tr key={index}>
-                <td className="py-2 px-4 border-b">{skill}</td>
-                <td className="py-2 px-4 border-b">
+                <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">{skill}</td>
+                <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
                   <button
                     onClick={() => removeSkill(skill)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    className="bg-red-500 text-white px-3 py-1 rounded dark:bg-red-700"
                   >
                     Remove
                   </button>
@@ -161,19 +157,19 @@ const SettingsPage = () => {
               </tr>
             ))}
             <tr>
-              <td className="py-2 px-4 border-b">
+              <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
                 <input
                   type="text"
                   value={newSkill}
                   onChange={handleSkillChange}
-                  className="w-full p-2 border border-gray-300 rounded mt-1"
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded mt-1 bg-white dark:bg-gray-700 text-black dark:text-white"
                   placeholder="New Skill"
                 />
               </td>
-              <td className="py-2 px-4 border-b">
+              <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
                 <button
                   onClick={addSkill}
-                  className="bg-green-500 text-white px-3 py-1 rounded"
+                  className="bg-green-500 text-white px-3 py-1 rounded dark:bg-green-700"
                 >
                   Add Skill
                 </button>

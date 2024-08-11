@@ -356,7 +356,7 @@ function HomePage() {
   };
 
   return (
-    <div className={`bg-white text-black dark:bg-gray-800 dark:text-white min-h-screen p-6 ${darkMode ? 'dark' : ''}`}>
+    <div className={`min-h-screen p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
       <h1 className="text-3xl mb-6">Welcome to the Home Page</h1>
       <button
         onClick={toggleDarkMode}
@@ -370,7 +370,7 @@ function HomePage() {
         <textarea
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
-          className="w-full p-2 border rounded"
+          className={`w-full p-2 border rounded ${darkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           placeholder="What's on your mind?"
         />
         <button onClick={addPost} className="bg-blue-600 text-white px-4 py-2 rounded mt-2">Post</button>
@@ -378,7 +378,7 @@ function HomePage() {
 
       <div className="space-y-4">
         {posts.map(post => (
-          <div key={post.post_id} className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md relative">
+          <div key={post.post_id} className={`p-6 rounded-lg shadow-md relative ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
             <span className="absolute top-2 right-2 text-gray-600 dark:text-gray-300 text-sm">{post.post_date}</span>
             <h2 className="font-semibold mb-2">{post.username}</h2>
             <p>{post.post_content}</p>
@@ -417,5 +417,4 @@ function HomePage() {
     </div>
   );
 }
-
 export default HomePage;
