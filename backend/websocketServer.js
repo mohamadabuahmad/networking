@@ -1,4 +1,4 @@
-const WebSocket = require('wss');
+const WebSocket = require('http');
 
 // Define the port and WebSocket server URL
 const port = process.env.PORT || 8080;
