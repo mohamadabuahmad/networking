@@ -1,6 +1,8 @@
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 });
+// Assuming this WebSocket server is deployed, Vercel will automatically assign a port.
+// Therefore, we don't need to specify a port here.
+const wss = new WebSocket.Server({ noServer: true });
 
 wss.on('connection', (ws) => {
   console.log('New WebSocket client connected');
@@ -22,5 +24,4 @@ wss.on('connection', (ws) => {
   });
 });
 
-
-console.log('WebSocket server running on ws://localhost:8080');
+console.log('WebSocket server running on wss://networking-znhw.vercel.app/');
