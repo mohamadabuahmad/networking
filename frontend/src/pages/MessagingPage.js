@@ -12,7 +12,7 @@ const MessagingPage = () => {
   const [chatHistories, setChatHistories] = useState({});
   const [isVideoCallActive, setIsVideoCallActive] = useState(false);
 
-  // Updated WebSocket URL for deployment
+  // WebSocket URL setup based on environment
   const websocketUrl = process.env.NODE_ENV === 'production'
     ? 'wss://networking-1etg.vercel.app'  // Secure WebSocket URL for production
     : 'ws://localhost:8080'; // Insecure WebSocket URL for local development
@@ -28,6 +28,7 @@ const MessagingPage = () => {
         }
       },
       onClose: () => console.log('WebSocket connection closed'),
+      onError: (error) => console.error('WebSocket error:', error),
       onMessage: (message) => {
         console.log('Received message:', message);
 
