@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Import useEffect
+import React, { useState, useEffect } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,6 +37,7 @@ const ForgotPasswordPage = () => {
 
   const handleSubmitEmail = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       const response = await axios.post('/forgot-password', { email });
       if (response.data.questions) {
@@ -52,10 +53,10 @@ const ForgotPasswordPage = () => {
 
   const handleSubmitAnswers = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       const response = await axios.post('/verify-answers', { email, answers });
       if (response.data.correct) {
-        alert(`Your password is: ${response.data.password}`);
         setMessage('Password has been sent to your email.');
         setStep(3);
       } else {
@@ -67,13 +68,13 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white p-6 sm:p-8 rounded shadow-md w-full max-w-md">
         {step === 1 && (
           <>
-            <h1 className="text-2xl font-bold mb-6">Forgot Password</h1>
-            {message && <p className="text-green-500">{message}</p>}
-            {error && <p className="text-red-500">{error}</p>}
+            <h1 className="text-2xl font-bold mb-6 text-center">Forgot Password</h1>
+            {message && <p className="text-green-500 text-center">{message}</p>}
+            {error && <p className="text-red-500 text-center">{error}</p>}
             <form onSubmit={handleSubmitEmail}>
               <div className="mb-4">
                 <label className="block text-gray-700">Email</label>
@@ -94,8 +95,8 @@ const ForgotPasswordPage = () => {
         )}
         {step === 2 && (
           <>
-            <h1 className="text-2xl font-bold mb-6">Answer Recovery Questions</h1>
-            {error && <p className="text-red-500">{error}</p>}
+            <h1 className="text-2xl font-bold mb-6 text-center">Answer Recovery Questions</h1>
+            {error && <p className="text-red-500 text-center">{error}</p>}
             <form onSubmit={handleSubmitAnswers}>
               <div className="mb-4">
                 <label className="block text-gray-700">{questions.question1}</label>
@@ -127,8 +128,10 @@ const ForgotPasswordPage = () => {
         )}
         {step === 3 && (
           <>
-            <h1 className="text-2xl font-bold mb-6">Password Sent</h1>
-            <p>Your password has been sent to your email. Redirecting to login page in {countdown} seconds...</p>
+            <h1 className="text-2xl font-bold mb-6 text-center">Password Sent</h1>
+            <p className="text-center">
+              Your password has been sent to your email. Redirecting to login page in {countdown} seconds...
+            </p>
           </>
         )}
       </div>

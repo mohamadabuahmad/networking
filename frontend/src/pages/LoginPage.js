@@ -34,10 +34,10 @@ const LoginPage = ({ setAuth }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6">Login</h1>
-        {error && <p className="text-red-500">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 sm:px-0">
+      <div className="bg-white p-6 sm:p-8 rounded shadow-md w-full max-w-md">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Login</h1>
+        {error && <p className="text-red-500 text-center">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
@@ -61,16 +61,16 @@ const LoginPage = ({ setAuth }) => {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors">
             Login
           </button>
         </form>
         <div className="mt-4 text-center">
           <p className="text-gray-700">
-            Don't have an account? <Link to="/register" className="text-blue-500">Sign up</Link>
+            Don't have an account? <Link to="/register" className="text-blue-500 hover:underline">Sign up</Link>
           </p>
-          <p className="text-gray-700">
-            Forgot your password? <Link to="/forgot-password" className="text-blue-500">Reset it</Link>
+          <p className="text-gray-700 mt-2">
+            Forgot your password? <Link to="/forgot-password" className="text-blue-500 hover:underline">Reset it</Link>
           </p>
         </div>
       </div>

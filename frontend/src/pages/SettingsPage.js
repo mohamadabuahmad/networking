@@ -3,7 +3,7 @@ import axios from '../api/axios';
 import { useUser } from '../pages/UserContext';
 
 const SettingsPage = () => {
-  const { currentUser, setCurrentUser } = useUser();
+  const { currentUser } = useUser();
   const [userData, setUserData] = useState({});
   const [editingField, setEditingField] = useState('');
   const [skills, setSkills] = useState([]);
@@ -86,97 +86,72 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 text-black dark:text-white">
-      <h1 className="text-3xl mb-6">Settings</h1>
+    <div className="p-4 sm:p-6 bg-white dark:bg-gray-800 text-black dark:text-white">
+      <h1 className="text-2xl sm:text-3xl mb-4 sm:mb-6">Settings</h1>
       
-      <div className="mb-6">
-        <h2 className="text-2xl mb-4">User Data</h2>
-        <table className="min-w-full bg-white dark:bg-gray-700 text-black dark:text-white">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Field</th>
-              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Value</th>
-              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Action</th>
-              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(userData).map(([field, value]) => (
-              field !== '_id' && (
-                <tr key={field}>
-                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">{field}</td>
-                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
-                    {editingField === field ? (
-                      <input
-                        type="text"
-                        value={value}
-                        onChange={(e) => handleInputChange(e, field)}
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded mt-1 bg-white dark:bg-gray-700 text-black dark:text-white"
-                      />
-                    ) : (
-                      renderFieldValue(value)
-                    )}
-                  </td>
-                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
-                    <button
-                      onClick={() => handleEditClick(field)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded dark:bg-blue-700"
-                    >
-                      {editingField === field ? 'Done' : 'Edit'}
-                    </button>
-                  </td>
-                  <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600"></td>
-                </tr>
-              )
-            ))}
-          </tbody>
-        </table>
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl mb-4">User Data</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Object.entries(userData).map(([field, value]) => (
+            field !== '_id' && (
+              <div key={field} className="p-4 border rounded bg-gray-100 dark:bg-gray-700">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">{field}</h3>
+                  <button
+                    onClick={() => handleEditClick(field)}
+                    className="bg-blue-500 text-white px-3 py-1 rounded dark:bg-blue-700"
+                  >
+                    {editingField === field ? 'Done' : 'Edit'}
+                  </button>
+                </div>
+                <div className="mt-2">
+                  {editingField === field ? (
+                    <input
+                      type="text"
+                      value={value}
+                      onChange={(e) => handleInputChange(e, field)}
+                      className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                    />
+                  ) : (
+                    <p>{renderFieldValue(value)}</p>
+                  )}
+                </div>
+              </div>
+            )
+          ))}
+        </div>
       </div>
 
       <div>
-        <h2 className="text-2xl mb-4">Skills</h2>
-        <table className="min-w-full bg-white dark:bg-gray-700 text-black dark:text-white">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Skill</th>
-              <th className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {skills.map((skill, index) => (
-              <tr key={index}>
-                <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">{skill}</td>
-                <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
-                  <button
-                    onClick={() => removeSkill(skill)}
-                    className="bg-red-500 text-white px-3 py-1 rounded dark:bg-red-700"
-                  >
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
-                <input
-                  type="text"
-                  value={newSkill}
-                  onChange={handleSkillChange}
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded mt-1 bg-white dark:bg-gray-700 text-black dark:text-white"
-                  placeholder="New Skill"
-                />
-              </td>
-              <td className="py-2 px-4 border-b border-gray-300 dark:border-gray-600">
-                <button
-                  onClick={addSkill}
-                  className="bg-green-500 text-white px-3 py-1 rounded dark:bg-green-700"
-                >
-                  Add Skill
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <h2 className="text-xl sm:text-2xl mb-4">Skills</h2>
+        <div className="grid gap-4">
+          {skills.map((skill, index) => (
+            <div key={index} className="p-4 border rounded bg-gray-100 dark:bg-gray-700 flex justify-between items-center">
+              <p>{skill}</p>
+              <button
+                onClick={() => removeSkill(skill)}
+                className="bg-red-500 text-white px-3 py-1 rounded dark:bg-red-700"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <div className="p-4 border rounded bg-gray-100 dark:bg-gray-700">
+            <input
+              type="text"
+              value={newSkill}
+              onChange={handleSkillChange}
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-black dark:text-white mb-2"
+              placeholder="New Skill"
+            />
+            <button
+              onClick={addSkill}
+              className="bg-green-500 text-white px-3 py-1 rounded dark:bg-green-700"
+            >
+              Add Skill
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

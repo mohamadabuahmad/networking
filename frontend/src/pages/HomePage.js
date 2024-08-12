@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+//import { useLocation } from 'react-router-dom';
 import CommentsSidebar from './CommentsSidebar';
 import { Post } from '../entities/Post';
 import { Comment } from '../entities/Comment';
@@ -8,7 +8,7 @@ import axios from '../api/axios';
 import { useUser } from './UserContext';
 
 function HomePage() {
-  const location = useLocation();
+  //const location = useLocation();
   const { currentUser } = useUser();
   const [posts, setPosts] = useState([]);
   const [postContent, setPostContent] = useState('');
@@ -78,7 +78,6 @@ function HomePage() {
       try {
         const response = await axios.get('/fetch-data');
         const { posts, comments, likes } = response.data;
-        console.log("Fetched comments:", comments);
         await enrichPostsData(posts, comments, likes);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -86,7 +85,7 @@ function HomePage() {
     };
 
     fetchData();
-  }, []);
+  }, );
 
   const addPost = async () => {
     if (postContent.trim()) {
@@ -264,7 +263,6 @@ function HomePage() {
             comment_id: comment.comment_id,
           };
         }));
-        console.log("Enriched comments:", enriched);
         setEnrichedComments(enriched);
       };
 
@@ -300,7 +298,7 @@ function HomePage() {
         if (response.data.message === 'Comment deleted successfully') {
           const updatedPost = await updatePost(post.post_id);
           if (updatedPost) {
-            const updatedPosts = posts.map((post) =>
+          const updatedPosts = posts.map((post) =>
               post.post_id === post.post_id ? updatedPost : post
             );
             setPosts(updatedPosts);
@@ -353,11 +351,11 @@ function HomePage() {
   };
 
   return (
-    <div className={`min-h-screen p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
-      <h1 className="text-3xl mb-6">Welcome to the Home Page</h1>
+    <div className={`min-h-screen p-4 sm:p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} transition duration-300`}>
+      <h1 className="text-2xl sm:text-3xl font-semibold mb-6">Welcome to the Home Page</h1>
       <button
         onClick={toggleDarkMode}
-        className="bg-gray-800 text-white px-4 py-2 rounded dark:bg-gray-200 dark:text-black"
+        className="mb-4 bg-gray-800 text-white px-4 py-2 rounded dark:bg-gray-200 dark:text-black"
       >
         {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
       </button>
@@ -370,25 +368,35 @@ function HomePage() {
           className={`w-full p-2 border rounded ${darkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           placeholder="What's on your mind?"
         />
-        <button onClick={addPost} className="bg-blue-600 text-white px-4 py-2 rounded mt-2">Post</button>
+        <button
+          onClick={addPost}
+          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
+        >
+          Post
+        </button>
       </div>
 
       <div className="space-y-4">
         {posts.map(post => (
-          <div key={post.post_id} className={`p-6 rounded-lg shadow-md relative ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
-            <span className="absolute top-2 right-2 text-gray-600 dark:text-gray-300 text-sm">{post.post_date}</span>
-            <h2 className="font-semibold mb-2">{post.username}</h2>
+          <div
+            key={post.post_id}
+            className={`p-4 sm:p-6 rounded-lg shadow-md relative transition duration-300 ${
+              darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'
+            }`}
+          >
+            <span className="absolute top-2 right-2 text-gray-600 dark:text-gray-300 text-xs sm:text-sm">{post.post_date}</span>
+            <h2 className="text-lg font-semibold mb-2">{post.username}</h2>
             <p>{post.post_content}</p>
-            <div className="mt-4">
+            <div className="mt-4 flex flex-wrap space-x-4">
               <span
                 onClick={() => showLikes(post.likes)}
-                className="cursor-pointer text-blue-500 mr-4"
+                className="cursor-pointer text-blue-500 hover:underline"
               >
                 Likes: {post.likes.length}
               </span>
               <span
                 onClick={() => showComments(post.comments)}
-                className="cursor-pointer text-blue-500 mr-4"
+                className="cursor-pointer text-blue-500 hover:underline"
               >
                 Comments: {post.comments.length}
               </span>

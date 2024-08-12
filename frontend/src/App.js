@@ -10,7 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import MessagingPage from './pages/MessagingPage';
 import Sidebar from './pages/Sidebar';
-import { UserProvider, useUser } from '../src/pages/UserContext';
+import { UserProvider } from '../src/pages/UserContext';
 
 function App() {
   const [auth, setAuth] = useState(false);
@@ -27,7 +27,7 @@ function App() {
           <Route path="/login" element={<LoginPage setAuth={setAuth} />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route element={<MainLayout />}>
+          <Route element={<MainLayout auth={auth} />}>
             <Route path="/home" element={auth ? <HomePage /> : <Navigate to="/login" />} />
             <Route path="/friends" element={auth ? <FriendsPage /> : <Navigate to="/login" />} />
             <Route path="/profile/:userId" element={auth ? <ProfilePage /> : <Navigate to="/login" />} />
@@ -42,13 +42,32 @@ function App() {
   );
 }
 
-const MainLayout = () => (
-  <div className="flex min-h-screen">
-    <Sidebar />
-    <div className="flex-grow p-6">
-      <Outlet />
+const MainLayout = ({ auth }) => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  return (
+    <div className="flex min-h-screen">
+      {/* Toggle button for mobile devices */}
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden p-4 bg-gray-800 text-white"
+      >
+        
+      </button>
+
+      {/* Sidebar component with toggle functionality */}
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+      {/* Main content area */}
+      <div className={`flex-grow p-6 ${isSidebarOpen ? 'ml-64' : 'ml-5 lg:ml-64'}`}>
+        <Outlet />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default App;
