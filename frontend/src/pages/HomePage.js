@@ -16,10 +16,9 @@ function HomePage() {
   const [sidebarContent, setSidebarContent] = useState([]);
   const [sidebarTitle, setSidebarTitle] = useState('');
   const [message, setMessage] = useState('');
-  const [darkMode, setDarkMode] = useState(false); // State for dark mode
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    // Check for saved theme in localStorage
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setDarkMode(savedTheme === 'dark');
@@ -33,6 +32,7 @@ function HomePage() {
     document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', newTheme);
   };
+
   const fetchUsername = async (userId) => {
     try {
       const response = await axios.get(`/user/${userId}`);
@@ -55,7 +55,7 @@ function HomePage() {
         return {
           ...comment,
           username: commentUsername,
-          comment_id: comment.comment_id, // Use the comment_id
+          comment_id: comment.comment_id,
         };
       }));
 
@@ -78,9 +78,7 @@ function HomePage() {
       try {
         const response = await axios.get('/fetch-data');
         const { posts, comments, likes } = response.data;
-
-        console.log("Fetched comments:", comments); // Log the raw comments to inspect structure
-
+        console.log("Fetched comments:", comments);
         await enrichPostsData(posts, comments, likes);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -135,7 +133,7 @@ function HomePage() {
         const updatedPosts = posts.map(post => {
           if (post.post_id === postId) {
             post.likes.push(new Like(postId, currentUser.user_id, currentUser.user_name));
-            post.likes_num += 1; // Update the likes count
+            post.likes_num += 1;
           }
           return post;
         });
@@ -149,7 +147,7 @@ function HomePage() {
   const updatePost = async (postId) => {
     try {
       const response = await axios.get(`/post/${postId}`);
-      return response.data; // Assuming the response contains the updated post data
+      return response.data;
     } catch (error) {
       console.error('Error fetching updated post data:', error);
       return null;
@@ -160,12 +158,12 @@ function HomePage() {
     try {
       const response = await axios.post('/remove-like', { post_id: postId, user: currentUser });
       if (response.data.message.includes('successfully')) {
-        const updatedPost = await updatePost(postId); // Fetch the updated post data
+        const updatedPost = await updatePost(postId);
         if (updatedPost) {
           const updatedPosts = posts.map(post => 
             post.post_id === postId ? updatedPost : post
           );
-          setPosts(updatedPosts); // Update the posts state with the updated post data
+          setPosts(updatedPosts);
         }
       }
     } catch (error) {
@@ -238,7 +236,7 @@ function HomePage() {
   const CommentSection = ({ post, addComment, addLike, removeLike, deleteComment, currentUser }) => {
     const [commentContent, setCommentContent] = useState('');
     const [enrichedComments, setEnrichedComments] = useState([]);
-    const [userHasLiked, setUserHasLiked] = useState(false); // Default to false
+    const [userHasLiked, setUserHasLiked] = useState(false);
 
     useEffect(() => {
       const checkIfUserLiked = async () => {
@@ -263,10 +261,10 @@ function HomePage() {
           return {
             ...comment,
             username,
-            comment_id: comment.comment_id, // Use the comment_id
+            comment_id: comment.comment_id,
           };
         }));
-        console.log("Enriched comments:", enriched); // Log to confirm comment_id is present
+        console.log("Enriched comments:", enriched);
         setEnrichedComments(enriched);
       };
 
@@ -296,7 +294,7 @@ function HomePage() {
           post_id: post.post_id,
           comment_id: commentId,
           user_id: currentUser.user_id,
-          current_user_name: currentUser.user_name, // Pass the current user's name
+          current_user_name: currentUser.user_name,
         });
     
         if (response.data.message === 'Comment deleted successfully') {
@@ -312,7 +310,6 @@ function HomePage() {
         console.error('Error deleting comment:', error);
       }
     };
-    
 
     return (
       <div className="flex flex-col mt-4">
@@ -417,4 +414,5 @@ function HomePage() {
     </div>
   );
 }
+
 export default HomePage;
