@@ -12,7 +12,7 @@ const MessagingPage = () => {
   const [chatHistories, setChatHistories] = useState({});
   const [isVideoCallActive, setIsVideoCallActive] = useState(false);
 
-  const websocketUrl = `https://networking-eight.vercel.app/`;
+  const websocketUrl = `wss://chat-server-networking-197a435521f1.herokuapp.com/`;
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     selectedUser ? websocketUrl : null,
